@@ -21,8 +21,9 @@ try:
     password = driver.find_element(By.XPATH, "//input[@type='password']")
     button = driver.find_element(By.XPATH, "//button[@class='btn btn-custom btn-lg btn-block mt-3 login-button']")
 
-    user.send_keys('59401133380')
-    password.send_keys('rezo2001')
+    # enter your lms login
+    user.send_keys('')
+    password.send_keys('')
     time.sleep(2)
     button.click()
 except Exception as e:
