@@ -1,8 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.support import expected_conditions as ec
 import time
 
 service = webdriver.chrome.service.Service(executable_path='chromedriver.exe')
@@ -12,7 +11,7 @@ driver.maximize_window()
 
 wait = WebDriverWait(driver, 10)
 try:
-    wait.until(EC.title_contains("TSU - Student Portal"))
+    wait.until(ec.title_contains("TSU - Student Portal"))
 except Exception as e:
     print(f"Error waiting for title: {e}")
 
@@ -30,7 +29,7 @@ except Exception as e:
     print(f"Error interacting with input fields using JavaScript: {e}")
 
 time.sleep(1)
-close_button = wait.until(EC.presence_of_element_located((By.XPATH, "//button[@class='mdc-button mat-mdc-button _mat-animation-noopable mat-unthemed mat-mdc-button-base']")))
+close_button = wait.until(ec.presence_of_element_located((By.XPATH, "//button[@class='mdc-button mat-mdc-button _mat-animation-noopable mat-unthemed mat-mdc-button-base']")))
 time.sleep(1)
 
 close_button.click()
@@ -38,8 +37,9 @@ time.sleep(1)
 
 i = 1
 while i < 13:
-    butt = wait.until(EC.presence_of_element_located((By.XPATH, f"(//button[@class='btn btn-outline-primary btn-borderNone'])[{i}]")))
-    time.sleep(1)
+    butt = wait.until(ec.element_to_be_clickable((By.XPATH, f"(//button[@class='btn btn-outline-primary btn-borderNone'])[{i}]")))
+    driver.execute_script("arguments[0].scrollIntoView();", butt)
+    time.sleep(1)  # Add a short delay
     butt.click()
     time.sleep(1)
 
@@ -47,7 +47,7 @@ while i < 13:
     try:
         k = 1
         while t:
-            agree = wait.until(EC.presence_of_element_located((By.XPATH, f"(//input[@value='23'])[{k}]")))
+            agree = wait.until(ec.presence_of_element_located((By.XPATH, f"(//input[@value='23'])[{k}]")))
             driver.execute_script("window.scrollBy(0, 100);")
             if agree:
                 # if not agree.is_selected():
@@ -65,85 +65,32 @@ while i < 13:
         else:
             print(f"Exception: {e}")
     finally:
-        # try:
-        often = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@value='26']")))
+        often = wait.until(ec.presence_of_element_located((By.XPATH, "//input[@value='26']")))
         time.sleep(1)
         often.click()
-        driver.execute_script("window.scrollBy(0, 150);")
-        if not wait.until(EC.presence_of_element_located((By.XPATH, "//input[@value='31']"))):
-            try:
-                yes = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@value='31']")))
-                time.sleep(1)
-                yes.click()
-            except Exception as e:
-                if "unexpected alert open" in str(e):
-                    alert = driver.switch_to.alert
-                    print(f"Alert Text: {alert.text}")
-                    alert.accept()
-                    print("hello")
-                else:
-                    print(f"Exception: {e}")
-            finally:
-                driver.execute_script("window.scrollBy(0, 200);")
-                finish = wait.until(EC.presence_of_element_located((By.XPATH, "//button[@class='btn btn-primary']")))
-                time.sleep(1)
-                finish.click()
-                time.sleep(3)
-                alert = wait.until(EC.alert_is_present())
+        driver.execute_script("window.scrollBy(0, 100);")
+        try:
+            yes = wait.until(ec.presence_of_element_located((By.XPATH, "//input[@value='31']")))
+            time.sleep(1)
+            yes.click()
+        except Exception as e:
+            if "unexpected alert open" in str(e):
+                alert = driver.switch_to.alert
+                print(f"Alert Text: {alert.text}")
                 alert.accept()
-                time.sleep(1)
-        else:
-            try:
-                raise TimeoutError
-            except Exception as e:
-                if "unexpected alert open" in str(e):
-                    alert = driver.switch_to.alert
-                    print(f"Alert Text: {alert.text}")
-                    alert.accept()
-                    print("hello")
-                else:
-                    print(f"Exception: {e}")
-            finally:
-                driver.execute_script("window.scrollBy(0, 200);")
-                finish = wait.until(EC.presence_of_element_located((By.XPATH, "//button[@class='btn btn-primary']")))
-                time.sleep(1)
-                finish.click()
-                time.sleep(3)
-                alert = wait.until(EC.alert_is_present())
-                alert.accept()
-                time.sleep(1)
+            else:
+                print(f"Exception: {e}")
+        finally:
+            driver.execute_script("window.scrollBy(0, 200);")
+            finish_locator = (By.CSS_SELECTOR, "button.btn.btn-primary")
+            finish = wait.until(ec.element_to_be_clickable(finish_locator))
+            time.sleep(1)
+            finish.click()
+            time.sleep(3)
+            alert = wait.until(ec.alert_is_present())
+            alert.accept()
+            time.sleep(1)
 
-
-        # if not wait.until(EC.presence_of_element_located((By.XPATH, "//input[@value='31']"))):
-        # time.sleep(3)
-        # driver.switch_to.alert.accept()
-
-        time.sleep(1)
-        driver.execute_script("window.scrollBy(0, 200);")
-        finish = wait.until(EC.presence_of_element_located((By.XPATH, "//button[@class='btn btn-primary']")))
-        time.sleep(1)
-        finish.click()
-        time.sleep(3)
-        alert = wait.until(EC.alert_is_present())
-        alert.accept()
-        time.sleep(1)
-        # else:
-        #     time.sleep(1)
-        #     driver.execute_script("window.scrollBy(0, 200);")
-        #     finish = wait.until(EC.presence_of_element_located((By.XPATH, "//button[@class='btn btn-primary']")))
-        #     time.sleep(1)
-        #     finish.click()
-        #     time.sleep(3)
-        #     alert = wait.until(EC.alert_is_present())
-        #     alert.accept()
-        #     time.sleep(1)
-        # except Exception as e:
-        #     if "unexpected alert open" in str(e):
-        #         alert = driver.switch_to.alert
-        #         print(f"Alert Text: {alert.text}")
-        #         alert.accept()
-        #     else:
-        #         print(f"Exception: {e}")
     i += 1
 
 time.sleep(50)
