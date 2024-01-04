@@ -24,8 +24,8 @@ try:
     password = driver.find_element(By.XPATH, "//input[@type='password']")
     button = driver.find_element(By.XPATH, "//button[@class='btn btn-custom btn-lg btn-block mt-3 login-button']")
 
-    user.send_keys('59401133380')
-    password.send_keys('rezo2001')
+    user.send_keys('')
+    password.send_keys('')
     button.click()
 except Exception as e:
     print(f"Error interacting with input fields using JavaScript: {e}")
